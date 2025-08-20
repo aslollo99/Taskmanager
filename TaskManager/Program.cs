@@ -21,6 +21,12 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+// Questo abilita il servizio di file statici
+app.UseStaticFiles();
+
+// Questo reindirizza la richiesta di base ("/") a index.html se non ci sono altri percorsi
+app.MapFallbackToFile("index.html");
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
