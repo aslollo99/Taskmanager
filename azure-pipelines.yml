@@ -3,40 +3,42 @@
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 trigger:
-- main   # o master, se il tuo branch è quello
+- master
 
 pool:
-  name: 'MyLocalAgent'
+  name: MyLocalAgent   # <-- usa il tuo agent pool self-hosted
 
 variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
 steps:
-- task: NuGetToolInstaller@1
-
-- task: NuGetCommand@2
+# 1) Usa .NET SDK
+- task: UseDotNet@2
   inputs:
-    restoreSolution: '$(solution)'
+    packageType: 'sdk'
+    version: '9.0.x'
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '-p:DeployOnBuild=true -p:WebPublishMethod=Package -p:PackageAsSingleFile=true -p:SkipInvalidConfigurations=true -p:PackageLocation="$(Build.ArtifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+# 2) Restore
+- script: dotnet restore
+  displayName: 'Restore dependencies'
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
+# 3) Build
+- script: dotnet build --configuration $(buildConfiguration) --no-restore
+  displayName: 'Build project'
 
+# 4) Test (opzionale)
+- script: dotnet test --configuration $(buildConfiguration) --no-build --verbosity normal
+  displayName: 'Run tests'
+
+# 5) Publish
+- script: dotnet publish -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)
+  displayName: 'Publish project'
+
+# 6) Deploy su Azure App Service
 - task: AzureWebApp@1
   inputs:
-    azureSubscription: 'taskManager'
-    appType: 'webApp'              # usa 'webAppLinux' se l'app è Linux
-    appName: 'TaskManager'
-    package: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+    azureSubscription: 'taskManager'   # service connection che hai creato in DevOps
+    appName: 'TaskManager'                     # il nome dell'App Service su Azure
+    package: '$(Build.ArtifactStagingDirectory)/**.zip'
+
 
