@@ -32,3 +32,18 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+  
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+
+- task: AzureWebApp@1
+  displayName: 'Azure App Service Deploy'
+  inputs:
+    azureSubscription: 'taskManager' # Sostituisci con il nome della tua Service Connection
+    appType: 'webApp'
+    appName: 'TaskManager' # Sostituisci con il nome del tuo App Service
+    package: '$(build.artifactStagingDirectory)/WebApp.zip' # Percorso del file ZIP generato da VSBuild
+    deploymentMethod: 'auto'
