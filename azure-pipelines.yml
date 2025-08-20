@@ -34,11 +34,20 @@ steps:
 - script: dotnet publish -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)
   displayName: 'Publish project'
 
+  # 6) Zip
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/publish_output'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/TaskManager.zip'
+    replaceExistingArchive: true
+
 # 6) Deploy su Azure App Service
 - task: AzureWebApp@1
   inputs:
     azureSubscription: 'taskManager'   # service connection che hai creato in DevOps
     appName: 'TaskManager'                     # il nome dell'App Service su Azure
-    package: '$(Build.ArtifactStagingDirectory)/**.zip'
+    package: '$(Build.ArtifactStagingDirectory)/TaskManager.zip'
 
 
