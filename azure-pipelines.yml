@@ -3,11 +3,11 @@
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 trigger:
-- master
+- main   # o master, se il tuo branch è quello
 
 pool:
   name: 'MyLocalAgent'
-  
+
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
@@ -19,18 +19,24 @@ steps:
 - task: NuGetCommand@2
   inputs:
     restoreSolution: '$(solution)'
-- task: DotNetCoreCLI@2
-  displayName: 'Publish'
-  inputs:
-    command: 'publish'
-    publishWebProjects: true
-    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactStagingDirectory)'
-    zipAfterPublish: true # Questo crea il file zip per te
 
-# 👇 Aggiungi questo task per il deploy
+- task: VSBuild@1
+  inputs:
+    solution: '$(solution)'
+    msbuildArgs: '-p:DeployOnBuild=true -p:WebPublishMethod=Package -p:PackageAsSingleFile=true -p:SkipInvalidConfigurations=true -p:PackageLocation="$(Build.ArtifactStagingDirectory)"'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+
 - task: AzureWebApp@1
-  displayName: 'Deploy su Azure App Service'
   inputs:
     azureSubscription: 'taskManager'
+    appType: 'webApp'              # usa 'webAppLinux' se l'app è Linux
     appName: 'TaskManager'
-    package: '$(build.artifactStagingDirectory)/WebApp.zip'
+    package: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+
