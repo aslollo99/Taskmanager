@@ -6,35 +6,29 @@ trigger:
 - master
 
 pool:
-  name: MyLocalAgent   # <-- usa il tuo agent pool self-hosted
+  name: 'MyLocalAgent'
 
 variables:
   buildConfiguration: 'Release'
 
 steps:
-# 1) Usa .NET SDK
-- task: UseDotNet@2
-  inputs:
-    packageType: 'sdk'
-    version: '9.0.x'
+# 1) Restore
+- script: dotnet restore TaskManager/TaskManager.csproj
+  displayName: 'Restore NuGet packages'
 
-# 2) Restore
-- script: dotnet restore
-  displayName: 'Restore dependencies'
-
-# 3) Build
-- script: dotnet build --configuration $(buildConfiguration) --no-restore
+# 2) Build
+- script: dotnet build TaskManager/TaskManager.csproj -c $(buildConfiguration) --no-restore
   displayName: 'Build project'
 
-# 4) Test (opzionale)
-- script: dotnet test --configuration $(buildConfiguration) --no-build --verbosity normal
+# 3) Test (se vuoi, altrimenti togli questo step)
+- script: dotnet test TaskManager/TaskManager.csproj -c $(buildConfiguration) --no-build --verbosity normal
   displayName: 'Run tests'
 
-# 5) Publish
-- script: dotnet publish -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)
+# 4) Publish
+- script: dotnet publish TaskManager/TaskManager.csproj -c $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/publish_output
   displayName: 'Publish project'
 
-  # 6) Zip
+# 5) Archive into zip
 - task: ArchiveFiles@2
   inputs:
     rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/publish_output'
@@ -43,11 +37,11 @@ steps:
     archiveFile: '$(Build.ArtifactStagingDirectory)/TaskManager.zip'
     replaceExistingArchive: true
 
-# 6) Deploy su Azure App Service
+# 6) Deploy to Azure App Service
 - task: AzureWebApp@1
   inputs:
-    azureSubscription: 'taskManager'   # service connection che hai creato in DevOps
-    appName: 'TaskManager'                     # il nome dell'App Service su Azure
+    azureSubscription: 'taskManager'
+    appName: 'TaskManager'
     package: '$(Build.ArtifactStagingDirectory)/TaskManager.zip'
 
 
