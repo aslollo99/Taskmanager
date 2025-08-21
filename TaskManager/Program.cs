@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TaskManager.Data;
+using TaskManager.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,9 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<StrutturaService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -25,7 +29,7 @@ if (app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 // Questo reindirizza la richiesta di base ("/") a index.html se non ci sono altri percorsi
-app.MapFallbackToFile("index.html");
+app.MapFallbackToFile("login.html");
 
 app.UseHttpsRedirection();
 
