@@ -32,7 +32,7 @@
                 <div class="card-body d-flex flex-column justify-content-center">
                     <i class="bi bi-qr-code display-1 mb-4"></i>
                     <h4 class="card-title">QR Code</h4>
-                    <p class="card-text">Gestisci i QR Code degli utenti.</p>
+                    <p class="card-text">Gestisci i tuoi QR Code.</p>
                     <a href="#" class="btn btn-light mt-auto">Apri</a>
                 </div>
             </div>
@@ -45,7 +45,7 @@
                     <i class="bi bi-door-closed display-1 mb-4"></i>
                     <h4 class="card-title">Porte</h4>
                     <p class="card-text">Controlla l’accesso alle porte.</p>
-                    <a href="#" class="btn btn-light mt-auto">Apri</a>
+                    <a href="doors.html" class="btn btn-light mt-auto">Apri</a>
                 </div>
             </div>
         </div>
@@ -67,9 +67,9 @@
             <div class="card text-center text-white bg-info h-100 shadow-lg">
                 <div class="card-body d-flex flex-column justify-content-center">
                     <i class="bi bi-person-circle display-1 mb-4"></i>
-                    <h4 class="card-title">Profilo</h4>
-                    <p class="card-text">Visualizza e modifica il tuo profilo.</p>
-                    <a href="#" class="btn btn-light mt-auto">Apri</a>
+                    <h4 class="card-title">Utenti</h4>
+                    <p class="card-text">Visualizza e modficia gli utenti.</p>
+                    <a href="user.html" class="btn btn-light mt-auto">Apri</a>
                 </div>
             </div>
         </div>
@@ -78,6 +78,19 @@
 
 
 <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const role = localStorage.getItem("role");
+
+        if (role === "user") {
+            const cards = document.querySelectorAll(".row.g-4 .col-md-3");
+            cards.forEach(card => {
+                const title = card.querySelector(".card-title").textContent;
+                if (title !== "QR Code") {
+                    card.style.display = "none";
+                }
+            });
+        }
+    });
     // Esempio: impostare fullName dinamicamente dal backend
     const user = {
         fullName: localStorage.getItem('fullname') || 'Utente'
@@ -86,6 +99,7 @@
 
     document.getElementById("logoutBtn").addEventListener("click", () => {
         localStorage.removeItem("fullname");
+        localStorage.removeItem("role");
         window.location.href = "login.html";
     });
 </script>

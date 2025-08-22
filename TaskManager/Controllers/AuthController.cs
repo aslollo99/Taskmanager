@@ -25,6 +25,6 @@ public class AuthController : ControllerBase
             return Unauthorized(new {message = "Username or password invalidi"});
         }
         
-        return Ok(new {message = "Login Effettuato", userId = user.Id, fullName = user.fullname});
+        return Ok(new {message = "Login Effettuato", userId = user.Id, fullName = user.fullname, role = user.Role});
     }
 }

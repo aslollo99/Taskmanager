@@ -16,6 +16,9 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<StrutturaService>();
+builder.Services.AddScoped<DoorService>();
+builder.Services.AddScoped<QrCodeService>();
+builder.Services.AddScoped<AccessRightService>();
 
 var app = builder.Build();
 

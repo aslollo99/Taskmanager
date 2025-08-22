@@ -7,6 +7,12 @@ function goBack() {
     window.location.href = "home.html"; // o la pagina a cui vuoi tornare
 }
 
+document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("fullname");
+    localStorage.removeItem("role");
+    window.location.href = "login.html";
+});
+
 async function loadStructures() {
     try {
         const response = await fetch("/struttura"); // endpoint GET strutture

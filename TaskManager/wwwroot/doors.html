@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestione Strutture</title>
+    <title>Gestione Porte</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -19,56 +19,66 @@
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Gestione Strutture</h2>
+        <h2>Gestione Porte</h2>
         <div>
             <a href="home.html" class="btn btn-outline-secondary me-2">Indietro</a>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#structureModal" onclick="openAddModal()">Aggiungi Struttura</button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#doorModal" onclick="openAddDoorModal()">Aggiungi Porta</button>
         </div>
     </div>
-    
     <table class="table table-striped table-hover">
         <thead class="table-dark">
         <tr>
             <th>ID</th>
-            <th>Nome</th>
-            <th>Indirizzo</th>
+            <th>Nome Porta</th>
+            <th>Struttura</th>
+            <th>Attiva</th>
             <th>Azioni</th>
         </tr>
         </thead>
-        <tbody id="structuresTable">
-        <!-- Righe generate dinamicamente dal JS -->
+        <tbody id="doorsTable">
+        <!-- Righe generate dinamicamente -->
         </tbody>
     </table>
 </div>
 
-<!-- Modale -->
-<div class="modal fade" id="structureModal" tabindex="-1" aria-hidden="true">
+<!-- Modal -->
+<div class="modal fade" id="doorModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalTitle">Aggiungi Struttura</h5>
+                <h5 class="modal-title" id="doorModalTitle">Aggiungi Porta</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <input type="hidden" id="structureId">
+                <input type="hidden" id="doorId">
                 <div class="mb-3">
-                    <label for="structureName" class="form-label">Nome</label>
-                    <input type="text" class="form-control" id="structureName">
+                    <label for="doorName" class="form-label">Nome Porta</label>
+                    <input type="text" class="form-control" id="doorName">
                 </div>
                 <div class="mb-3">
-                    <label for="structureAddress" class="form-label">Indirizzo</label>
-                    <input type="text" class="form-control" id="structureAddress">
+                    <label for="doorStructure" class="form-label">Struttura</label>
+                    <select class="form-control" id="doorStructure">
+                        <!-- Popolato da JS con le strutture disponibili -->
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="doorStructure" class="form-label">Location</label>
+                    <input type="text" class="form-control" id="doorLocation">
+                </div>
+                <div class="mb-3 form-check">
+                    <label class="form-check-label" for="doorIsActive">Attiva</label>
+                    <input type="checkbox" class="form-check-input" id="doorIsActive">
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
-                <button type="button" class="btn btn-primary" onclick="saveStructure()">Salva</button>
+                <button type="button" class="btn btn-primary" onclick="saveDoor()">Salva</button>
             </div>
         </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="strutture.js"></script>
+<script src="doors.js"></script>
 </body>
 </html>

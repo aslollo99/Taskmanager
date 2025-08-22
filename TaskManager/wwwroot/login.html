@@ -65,6 +65,7 @@
             if (response.ok) {
                 resultDiv.innerHTML = `<div class="alert alert-success">✅ Login riuscito! Benvenuto <b>${result.fullName}</b></div>`;
                 localStorage.setItem("fullname", result.fullName);
+                localStorage.setItem("role", result.role);
                 // Redirect alla homepage dopo 1 secondo
                 setTimeout(() => {
                     window.location.href = "home.html";
